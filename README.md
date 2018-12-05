@@ -40,6 +40,10 @@ RUMOUR_PRIO_META_REFRESH=120s \
 ./rumour
 ```
 
+## Integrations
+
+* [datadog](./integrations/datadog/) - a Datadog check to pull metrics out of Rumour and push them to [Datadog](https://www.datadoghq.com/).
+
 ## API
 
 Rumour exposes metrics via a HTTP API for data collectors. It is loosely based on [Burrow's](https://github.com/linkedin/Burrow/wiki/HTTP-Endpoint) HTTP endpoints.
@@ -153,8 +157,3 @@ GET /v1/clusters/NAME/consumers/GROUP
   ]
 }
 ```
-
-## Integrations
-
-* [datadog](./integrations/datadog/) - a Datadog check to pull metrics out of Rumour and push them to [Datadog](https://www.datadoghq.com/).
-
