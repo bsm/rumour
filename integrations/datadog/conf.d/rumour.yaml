@@ -1,6 +1,6 @@
 init_config:
 instances:
-  - url: http://burrow:8080
+  - url: http://rumour:8080
     # clusters:
     #   - default
     # tags:
