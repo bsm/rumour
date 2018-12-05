@@ -33,7 +33,11 @@ Additonal configuration can be specified for each of the named clusters using th
 Example:
 
 ```shell
-RUMOUR_CLUSTERS=main,prio RUMOUR_MAIN_BROKERS=10.0.0.1:9092,10.0.0.2:9092,10.0.0.3:9092 RUMOUR_PRIO_BROKERS=10.0.0.1:9192,10.0.0.2:9192,10.0.0.3:9192 RUMOUR_PRIO_META_REFRESH=120s ./rumour
+RUMOUR_CLUSTERS=main,prio \
+RUMOUR_MAIN_BROKERS=10.0.0.1:9092,10.0.0.2:9092,10.0.0.3:9092 \
+RUMOUR_PRIO_BROKERS=10.0.0.1:9192,10.0.0.2:9192,10.0.0.3:9192 \
+RUMOUR_PRIO_META_REFRESH=120s \
+./rumour
 ```
 
 ## API
@@ -53,23 +57,17 @@ For bad requests, the API will return an appropriate HTTP status code and a JSON
 
 ### Endpoints
 
-**Health check**:
-
-Request:
+#### Health check:
 
 ```
 GET /healthz
 ```
 
-**List clusters**:
-
-Request:
+#### List clusters:
 
 ```
 GET /v1/clusters
 ```
-
-Response:
 
 ```json
 {
@@ -77,15 +75,11 @@ Response:
 }
 ```
 
-**Show cluster details**:
-
-Request:
+#### Show cluster details:
 
 ```
 GET /v1/clusters/NAME
 ```
-
-Response:
 
 ```json
 {
@@ -96,15 +90,11 @@ Response:
 }
 ```
 
-**Show cluster topics**:
-
-Request:
+#### Show cluster topics:
 
 ```
 GET /v1/clusters/NAME/topics
 ```
-
-Response:
 
 ```json
 {
@@ -113,15 +103,11 @@ Response:
 }
 ```
 
-**Show cluster consumers**:
-
-Request:
+#### Show cluster consumers:
 
 ```
 GET /v1/clusters/NAME/consumers
 ```
-
-Response:
 
 ```json
 {
@@ -130,15 +116,11 @@ Response:
 }
 ```
 
-**Show topic**:
-
-Request:
+#### Show topic:
 
 ```
 GET /v1/clusters/NAME/topics/TOPIC
 ```
-
-Response:
 
 ```json
 {
@@ -148,15 +130,11 @@ Response:
 }
 ```
 
-**Show consumer**:
-
-Request:
+#### Show consumer:
 
 ```
 GET /v1/clusters/NAME/consumers/GROUP
 ```
-
-Response:
 
 ```json
 {
@@ -165,8 +143,18 @@ Response:
   "topics": [
     {
       "topic": "my-topic",
-      "offsets": [1037, 1041, 1029, 1044]
+      "offsets": [
+        {"offset":1037, "lag": 4},
+        {"offset":1041, "lag": 1},
+        {"offset":1029, "lag": 14},
+        {"offset":1044, "lag": 0}
+      ]
     }
   ]
 }
 ```
+
+## Integrations
+
+* [datadog](./integrations/datadog/) - a Datadog check to pull metrics out of Rumour and push them to [Datadog](https://www.datadoghq.com/).
+
