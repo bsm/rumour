@@ -271,7 +271,7 @@ func (f *clusterFetcher) refreshGroupOffsets(ctx context.Context, group string, 
 		for part, block := range blocks {
 			offsets[int(part)] = block.Offset
 		}
-		f.state.UpdateConsumerOffsets(group, topic, offsets)
+		f.state.UpdateConsumerOffsets(group, topic, time.Now().Unix(), offsets)
 	}
 	return nil
 }

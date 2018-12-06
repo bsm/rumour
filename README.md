@@ -147,6 +147,7 @@ GET /v1/clusters/NAME/consumers/GROUP
   "topics": [
     {
       "topic": "my-topic",
+      "timestamp": 1515151515,
       "offsets": [
         {"offset":1037, "lag": 4},
         {"offset":1041, "lag": 1},

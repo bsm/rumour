@@ -42,8 +42,9 @@ func (s *State) Cluster(name string) *ClusterState {
 
 // ConsumerTopic maintains group topic info.
 type ConsumerTopic struct {
-	Topic   string           `json:"topic"`
-	Offsets []ConsumerOffset `json:"offsets"`
+	Topic     string           `json:"topic"`
+	Timestamp int64            `json:"timestamp"`
+	Offsets   []ConsumerOffset `json:"offsets"`
 }
 
 type consumerTopics []ConsumerTopic
@@ -75,11 +76,16 @@ func calcConsumerOffsets(maxima, offsets []int64) []ConsumerOffset {
 
 // --------------------------------------------------------------------
 
+type consumerOffsetState struct {
+	Offsets   []int64
+	Timestamp int64
+}
+
 // ClusterState maintains cluster state.
 type ClusterState struct {
 	brokers   []string
 	topics    map[string][]int64
-	consumers map[string]map[string][]int64
+	consumers map[string]map[string]consumerOffsetState
 	mu        sync.RWMutex
 }
 
@@ -87,7 +93,7 @@ type ClusterState struct {
 func NewClusterState() *ClusterState {
 	return &ClusterState{
 		topics:    make(map[string][]int64),
-		consumers: make(map[string]map[string][]int64),
+		consumers: make(map[string]map[string]consumerOffsetState),
 	}
 }
 
@@ -158,11 +164,12 @@ func (s *ClusterState) ConsumerTopics(group string) ([]ConsumerTopic, bool) {
 
 	if topics, ok := s.consumers[group]; ok {
 		res := make([]ConsumerTopic, 0, len(topics))
-		for topic, offsets := range topics {
+		for topic, cos := range topics {
 			if maxima, ok := s.topics[topic]; ok {
 				res = append(res, ConsumerTopic{
-					Topic:   topic,
-					Offsets: calcConsumerOffsets(maxima, offsets),
+					Topic:     topic,
+					Timestamp: cos.Timestamp,
+					Offsets:   calcConsumerOffsets(maxima, cos.Offsets),
 				})
 			}
 		}
@@ -173,14 +180,16 @@ func (s *ClusterState) ConsumerTopics(group string) ([]ConsumerTopic, bool) {
 }
 
 // UpdateConsumerOffsets updates consumer offsets.
-func (s *ClusterState) UpdateConsumerOffsets(group, topic string, offsets []int64) {
+func (s *ClusterState) UpdateConsumerOffsets(group, topic string, timestamp int64, offsets []int64) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	topics, ok := s.consumers[group]
 	if !ok {
-		topics = make(map[string][]int64)
+		topics = make(map[string]consumerOffsetState)
 	}
-	topics[topic] = offsets
+	if timestamp >= topics[topic].Timestamp {
+		topics[topic] = consumerOffsetState{Offsets: offsets, Timestamp: timestamp}
+	}
 	s.consumers[group] = topics
 }

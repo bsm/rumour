@@ -36,9 +36,9 @@ var _ = Describe("ClusterState", func() {
 		subject.UpdateTopic("two-topic", []int64{117, 125, 101, 124})
 		subject.UpdateTopic("one-topic", []int64{125, 101, 117, 124})
 
-		subject.UpdateConsumerOffsets("csmy", "two-topic", []int64{125, 100, 117, 124})
-		subject.UpdateConsumerOffsets("csmx", "one-topic", []int64{120, 101, 117, 115})
-		subject.UpdateConsumerOffsets("csmx", "two-topic", []int64{999, 125, 100})
+		subject.UpdateConsumerOffsets("csmy", "two-topic", 1515151515, []int64{125, 100, 117, 124})
+		subject.UpdateConsumerOffsets("csmx", "one-topic", 1515151516, []int64{120, 101, 117, 115})
+		subject.UpdateConsumerOffsets("csmx", "two-topic", 1515151517, []int64{999, 125, 100})
 	})
 
 	It("should read brokers", func() {
@@ -62,18 +62,26 @@ var _ = Describe("ClusterState", func() {
 		topics, ok := subject.ConsumerTopics("csmx")
 		Expect(ok).To(BeTrue())
 		Expect(topics).To(Equal([]rumour.ConsumerTopic{
-			{Topic: "one-topic", Offsets: []rumour.ConsumerOffset{
-				{Offset: 120, Lag: 5},
-				{Offset: 101, Lag: 0},
-				{Offset: 117, Lag: 0},
-				{Offset: 115, Lag: 9},
-			}},
-			{Topic: "two-topic", Offsets: []rumour.ConsumerOffset{
-				{Offset: 999, Lag: 0},
-				{Offset: 125, Lag: 0},
-				{Offset: 100, Lag: 1},
-				{Offset: 0, Lag: 124},
-			}},
+			{
+				Topic:     "one-topic",
+				Timestamp: 1515151516,
+				Offsets: []rumour.ConsumerOffset{
+					{Offset: 120, Lag: 5},
+					{Offset: 101, Lag: 0},
+					{Offset: 117, Lag: 0},
+					{Offset: 115, Lag: 9},
+				},
+			},
+			{
+				Topic:     "two-topic",
+				Timestamp: 1515151517,
+				Offsets: []rumour.ConsumerOffset{
+					{Offset: 999, Lag: 0},
+					{Offset: 125, Lag: 0},
+					{Offset: 100, Lag: 1},
+					{Offset: 0, Lag: 124},
+				},
+			},
 		}))
 
 		_, ok = subject.ConsumerTopics("missing")
