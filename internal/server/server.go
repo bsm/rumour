@@ -12,11 +12,6 @@ import (
 	"github.com/go-chi/chi/middleware"
 )
 
-// HTTP is an HTTP server.
-type handler struct {
-	state *rumour.State
-}
-
 // NewHTTP inits an HTTP server.
 func NewHTTP(addr string, state *rumour.State) *http.Server {
 	logger := log.New(os.Stdout, "[http] ", log.LstdFlags)
