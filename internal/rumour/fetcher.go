@@ -99,7 +99,7 @@ func (f *Fetcher) monitor(ctx context.Context, cc *ClusterConfig, state *Cluster
 			return
 		case <-mtt.C:
 			start := time.Now()
-			if cf.refreshMeta(ctx); err != nil {
+			if err := cf.refreshMeta(ctx); err != nil {
 				f.logger.Printf("error refreshing groups for %q: %v", cc.Name, err)
 				mtt.Reset(30 * time.Second) // try again in 30s
 			} else {
