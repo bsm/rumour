@@ -1,4 +1,4 @@
-FROM golang:1.11-alpine AS builder
+FROM golang:1.13-alpine AS builder
 
 RUN apk add --no-cache \
 	  git
@@ -10,7 +10,7 @@ RUN set -eux; \
 
 # ---------------------------------------------------------------------
 
-FROM iron/go
+FROM gcr.io/distroless/static:nonroot
 COPY --from=builder /rumour/bin/rumour /usr/bin/
 
 EXPOSE 8080/tcp
