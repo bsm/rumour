@@ -284,11 +284,12 @@ func (f *clusterFetcher) extractGroupTopicAssociations(res *sarama.DescribeGroup
 
 		topics := make(map[string]struct{})
 		for _, mem := range group.Members {
-			meta, err := mem.GetMemberMetadata()
+			mas, err := mem.GetMemberAssignment()
 			if err != nil {
 				return err
 			}
-			for _, topic := range meta.Topics {
+
+			for topic := range mas.Topics {
 				topics[topic] = struct{}{}
 			}
 		}
