@@ -108,7 +108,7 @@ func (f *Fetcher) monitor(ctx context.Context, cc *ClusterConfig, state *Cluster
 			}
 		case <-ott.C:
 			start := time.Now()
-			if cf.refreshOffsets(ctx); err != nil {
+			if err := cf.refreshOffsets(ctx, start.Add(-2*cc.OffsetRefresh)); err != nil {
 				f.logger.Printf("error refreshing offsets for %q: %v", cc.Name, err)
 				ott.Reset(30 * time.Second) // try again in 30s
 			} else {
@@ -169,7 +169,7 @@ func (f *clusterFetcher) refreshMeta(ctx context.Context) error {
 	return nil
 }
 
-func (f *clusterFetcher) refreshOffsets(ctx context.Context) error {
+func (f *clusterFetcher) refreshOffsets(ctx context.Context, expireIfNotChangedSince time.Time) error {
 	if err := f.refreshTopics(ctx); err != nil {
 		return err
 	}
@@ -183,6 +183,8 @@ func (f *clusterFetcher) refreshOffsets(ctx context.Context) error {
 			return err
 		}
 	}
+
+	f.state.ExpireConsumerGroups(expireIfNotChangedSince.Unix())
 	return nil
 }
 

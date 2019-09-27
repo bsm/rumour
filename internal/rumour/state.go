@@ -193,3 +193,20 @@ func (s *ClusterState) UpdateConsumerOffsets(group, topic string, timestamp int6
 	}
 	s.consumers[group] = topics
 }
+
+// ExpireConsumerGroups removes consumer groups that have not updated since timestamp.
+func (s *ClusterState) ExpireConsumerGroups(timestamp int64) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	for group, topics := range s.consumers {
+		for topic, state := range topics {
+			if state.Timestamp < timestamp {
+				delete(topics, topic)
+			}
+		}
+		if len(topics) == 0 {
+			delete(s.consumers, group)
+		}
+	}
+}

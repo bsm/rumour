@@ -87,4 +87,21 @@ var _ = Describe("ClusterState", func() {
 		_, ok = subject.ConsumerTopics("missing")
 		Expect(ok).To(BeFalse())
 	})
+
+	It("should expire consumer groups", func() {
+		subject.ExpireConsumerGroups(1515151500)
+		Expect(subject.ConsumerGroups()).To(Equal([]string{"csmx", "csmy"}))
+		topix, _ := subject.ConsumerTopics("csmx")
+		Expect(topix).To(HaveLen(2))
+		topiy, _ := subject.ConsumerTopics("csmy")
+		Expect(topiy).To(HaveLen(1))
+
+		subject.ExpireConsumerGroups(1515151517)
+		Expect(subject.ConsumerGroups()).To(Equal([]string{"csmx"}))
+		topix, _ = subject.ConsumerTopics("csmx")
+		Expect(topix).To(HaveLen(1))
+
+		subject.ExpireConsumerGroups(1515151520)
+		Expect(subject.ConsumerGroups()).To(BeEmpty())
+	})
 })
