@@ -65,7 +65,7 @@ func run(ctx context.Context) error {
 		<-sigs
 
 		cancel()
-		srv.Shutdown(context.Background())
+		_ = srv.Shutdown(context.Background())
 	}()
 
 	return srv.ListenAndServe()

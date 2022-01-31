@@ -47,11 +47,6 @@ func (f *Fetcher) RunLoop(ctx context.Context, state *State) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	names := make([]string, 0, len(f.clusters))
-	for _, cc := range f.clusters {
-		names = append(names, cc.Name)
-	}
-
 	wg := new(sync.WaitGroup)
 	for _, cc := range f.clusters {
 		wg.Add(1)
