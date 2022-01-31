@@ -31,7 +31,7 @@ func newRouter(state *rumour.State, logger zerolog.Logger) *chi.Mux {
 	r.Use(middleware.Heartbeat("/healthz"))
 
 	r.Route("/v1", func(v1 chi.Router) {
-		v1.Use(httplog.RequestLogger(logger))
+		v1.Use(httplog.Handler(logger))
 		v1.Use(middleware.SetHeader("Content-Type", "application/json"))
 
 		v1.Get("/clusters", listClusters(state))
