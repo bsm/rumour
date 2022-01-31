@@ -1,12 +1,12 @@
 VERSION:=$(shell git tag -l | tail -n1 | tr -d 'v')
 
-default: vet test
+default: test
 
 test:
 	go test ./...
 
-vet:
-	go vet ./...
+lint:
+	golangci-lint run
 
 DOCKER_NAME=blacksquaremedia/rumour
 

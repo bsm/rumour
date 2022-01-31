@@ -3,8 +3,8 @@ package rumour_test
 import (
 	"github.com/bsm/rumour/internal/rumour"
 
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	. "github.com/bsm/ginkgo/v2"
+	. "github.com/bsm/gomega"
 )
 
 var _ = Describe("State", func() {

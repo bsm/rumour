@@ -9,6 +9,7 @@ import (
 
 	"github.com/bsm/rumour/internal/rumour"
 	"github.com/bsm/rumour/internal/server"
+	"github.com/go-chi/httplog"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -24,7 +25,14 @@ func run(ctx context.Context) error {
 
 	var rc struct {
 		Clusters []string `default:"default"`
-		HTTPAddr string   `default:":8080"`
+		HTTP     struct {
+			Addr string `default:":8080"`
+		}
+		Log struct {
+			Level string `default:"info"`
+			JSON  bool   `default:"false"`
+			Tags  map[string]string
+		}
 	}
 	if err := envconfig.Process("rumour", &rc); err != nil {
 		return err
@@ -44,7 +52,11 @@ func run(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	srv := server.NewHTTP(rc.HTTPAddr, state)
+	srv := server.NewHTTP(rc.HTTP.Addr, state, httplog.Options{
+		LogLevel: rc.Log.Level,
+		JSON:     rc.Log.JSON,
+		Tags:     rc.Log.Tags,
+	})
 
 	go fetcher.RunLoop(ctx, state)
 	go func() {

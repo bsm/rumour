@@ -1,16 +1,15 @@
-FROM golang:1.13-alpine AS builder
+FROM golang:1.17-alpine AS builder
 
-RUN apk add --no-cache \
-	  git
+RUN apk add --no-cache git
 ADD . /rumour
 WORKDIR /rumour
 ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 RUN set -eux; \
-	  go build -o bin/rumour cmd/rumour/main.go
+	go build -o bin/rumour cmd/rumour/main.go
 
 # ---------------------------------------------------------------------
 
-FROM gcr.io/distroless/static:nonroot
+FROM gcr.io/distroless/static-debian11:nonroot
 COPY --from=builder /rumour/bin/rumour /usr/bin/
 
 EXPOSE 8080/tcp

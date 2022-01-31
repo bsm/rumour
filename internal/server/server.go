@@ -2,31 +2,28 @@ package server
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/bsm/rumour/internal/rumour"
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/httplog"
+	"github.com/rs/zerolog"
 )
 
 // NewHTTP inits an HTTP server.
-func NewHTTP(addr string, state *rumour.State) *http.Server {
-	logger := log.New(os.Stdout, "[http] ", log.LstdFlags)
-
+func NewHTTP(addr string, state *rumour.State, logOpt httplog.Options) *http.Server {
 	return &http.Server{
 		Addr:         addr,
-		Handler:      newRouter(state, logger),
-		ErrorLog:     logger,
+		Handler:      newRouter(state, httplog.NewLogger("http", logOpt)),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 300 * time.Second,
 		IdleTimeout:  15 * time.Second,
 	}
 }
 
-func newRouter(state *rumour.State, logger *log.Logger) *chi.Mux {
+func newRouter(state *rumour.State, logger zerolog.Logger) *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
@@ -34,7 +31,7 @@ func newRouter(state *rumour.State, logger *log.Logger) *chi.Mux {
 	r.Use(middleware.Heartbeat("/healthz"))
 
 	r.Route("/v1", func(v1 chi.Router) {
-		v1.Use(middleware.RequestLogger(&middleware.DefaultLogFormatter{Logger: logger, NoColor: false}))
+		v1.Use(httplog.RequestLogger(logger))
 		v1.Use(middleware.SetHeader("Content-Type", "application/json"))
 
 		v1.Get("/clusters", listClusters(state))

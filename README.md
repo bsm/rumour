@@ -21,14 +21,18 @@ docker run --rm \
 
 All configuration is done via ENV variables. The main configuration parameters are:
 
-* `RUMOUR_CLUSTERS` - a comma-separated list of cluster names to monitor. Default: `default`
-* `RUMOUR_HTTP_ADDR` - the address to listen on. Default: `:8080`.
+- `RUMOUR_CLUSTERS` - a comma-separated list of cluster names to monitor. Default: `default`
+- `RUMOUR_HTTP_ADDR` - the address to listen on. Default: `:8080`.
+- `RUMOUR_LOG_LEVEL` - the log level. Default: `info`.
+- `RUMOUR_LOG_JSON` - use JSON format. Default: `false`.
+- `RUMOUR_LOG_TAGS` - additional logging tags as comma-separated map
+  `key1:value,key1:value`. Default: _none_.
 
 Additonal configuration can be specified for each of the named clusters using the `RUMOUR_{cluster}_` prefix.
 
-* `RUMOUR_{cluster}_BROKERS` - a comma-separated list of broker addresses.
-* `RUMOUR_{cluster}_META_REFRESH` - metadata refresh interval. Default: 180s.
-* `RUMOUR_{cluster}_OFFSET_REFRESH` - offset refresh interval. Default: 30s.
+- `RUMOUR_{cluster}_BROKERS` - a comma-separated list of broker addresses.
+- `RUMOUR_{cluster}_META_REFRESH` - metadata refresh interval. Default: 180s.
+- `RUMOUR_{cluster}_OFFSET_REFRESH` - offset refresh interval. Default: 30s.
 
 Example:
 
@@ -42,7 +46,7 @@ RUMOUR_PRIO_META_REFRESH=120s \
 
 ## Integrations
 
-* [datadog](./integrations/datadog/) - a Datadog check to pull metrics out of Rumour and push them to [Datadog](https://www.datadoghq.com/).
+- [datadog](./integrations/datadog/) - a Datadog check to pull metrics out of Rumour and push them to [Datadog](https://www.datadoghq.com/).
 
 ## API
 
@@ -149,10 +153,10 @@ GET /v1/clusters/NAME/consumers/GROUP
       "topic": "my-topic",
       "timestamp": 1515151515,
       "offsets": [
-        {"offset":1037, "lag": 4},
-        {"offset":1041, "lag": 1},
-        {"offset":1029, "lag": 14},
-        {"offset":1044, "lag": 0}
+        { "offset": 1037, "lag": 4 },
+        { "offset": 1041, "lag": 1 },
+        { "offset": 1029, "lag": 14 },
+        { "offset": 1044, "lag": 0 }
       ]
     }
   ]
