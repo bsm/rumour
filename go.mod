@@ -7,7 +7,7 @@ require (
 	github.com/bsm/gomega v1.17.0
 	github.com/eapache/go-resiliency v1.2.0 // indirect
 	github.com/frankban/quicktest v1.5.0 // indirect
-	github.com/go-chi/chi/v5 v5.0.7
+	github.com/go-chi/chi/v5 v5.2.2
 	github.com/go-chi/httplog v0.2.1
 	github.com/jcmturner/gofork v1.0.0 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0
